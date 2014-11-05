@@ -37,6 +37,7 @@ class TestIssueLsCommand(BaseTest):
         self.command.repo = github3.repos.Repository(self.json('issue'))
 
     def test_format_short_issue(self):
+        self.command.fs = '#{0.number:<10} {bold}{0.title}{default} - @{0.user}'
         out = self.command.format_short_issue(self.issue)
         assert tc['default'] in out
         assert tc['bold'] in out
