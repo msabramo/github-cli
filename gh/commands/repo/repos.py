@@ -4,7 +4,7 @@ from github3.users import User
 
 
 class ReposCommand(Command):
-    name = 'repos'
+    name = 'repo.repos'
     usage = ('%prog [options] repos [options] [login] [sub-command]')
     summary = ('Interact with the Repositories API')
     fs = ("{d[bold]}{0.name}{d[default]}\n  {1:.72}")
@@ -64,13 +64,18 @@ class ReposCommand(Command):
         }
 
         if isinstance(user, User):
-            repos = self.gh.iter_repos(**kwargs)
-        else:
             repos = self.gh.iter_repos(self.user, **kwargs)
+        else:
+            repos = self.gh.iter_repos(**kwargs)
 
         for repo in repos:
-            fs = self.fs if repo.description else self.fs2
-            print(fs.format(repo, repo.description.encode('utf-8'), d=tc))
+            if repo.description:
+                fs = self.fs
+                description = repo.description.encode('utf-8')
+            else:
+                fs = self.fs2
+                description = None
+            print(fs.format(repo, description, d=tc))
 
         return self.SUCCESS
 

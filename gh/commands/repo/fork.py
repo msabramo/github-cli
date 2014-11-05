@@ -2,7 +2,7 @@ from gh.base import Command
 
 
 class ForkRepoCommand(Command):
-    name = 'fork.repo'
+    name = 'repo.fork'
     usage = '%prog [options] fork.repo [options] login/repo'
     summary = 'Fork a repository'
     subcommands = {}

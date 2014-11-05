@@ -3,7 +3,7 @@ from gh.compat import input
 
 
 class CreateRepoCommand(Command):
-    name = 'create.repo'
+    name = 'repo.create'
     usage = '%prog [options] create.repo [options] name'
     summary = 'Create a new repository'
     subcommands = {}

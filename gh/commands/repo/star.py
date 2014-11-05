@@ -2,7 +2,7 @@ from gh.base import Command
 
 
 class StarRepoCommand(Command):
-    name = 'star.repo'
+    name = 'repo.star'
     usage = '%prog [options] star.repo [login/]repo'
     summary = 'Star a repository'
     subcommands = {}
