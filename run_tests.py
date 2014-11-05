@@ -35,9 +35,10 @@ def main(script=False):
         suite = unittest.defaultTestLoader.loadTestsFromNames(names)
 
     if script:
-        unittest.TextTestRunner(verbosity=1).run(suite)
+        result = unittest.TextTestRunner(verbosity=1).run(suite)
+        return 0 if result.wasSuccessful() else 1
     else:
         return suite
 
 if __name__ == "__main__":
-    main(True)
+    sys.exit(main(True))
