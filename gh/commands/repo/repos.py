@@ -69,8 +69,13 @@ class ReposCommand(Command):
             repos = self.gh.iter_repos(**kwargs)
 
         for repo in repos:
-            fs = self.fs if repo.description else self.fs2
-            print(fs.format(repo, repo.description.encode('utf-8'), d=tc))
+            if repo.description:
+                fs = self.fs
+                description = repo.description.encode('utf-8')
+            else:
+                fs = self.fs2
+                description = None
+            print(fs.format(repo, description, d=tc))
 
         return self.SUCCESS
 
