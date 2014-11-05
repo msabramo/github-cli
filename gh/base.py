@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABCMeta
 from optparse import OptionParser
-from github3 import GitHub
+from github3 import GitHub, GitHubEnterprise
 from getpass import getpass
 from gh.util import github_config
 from gh.compat import input, ConfigParser
@@ -26,11 +26,18 @@ class Command(object):
         super(Command, self).__init__()
         assert self.name
         commands[self.name] = self
-        self.gh = GitHub()
+        self.gh = self.get_github()
         self.gh.set_user_agent('github-cli/{0} (http://git.io/MEmEmw)'.format(
             __version__
         ))
         self.parser = CustomOptionParser(usage=self.usage)
+
+    def get_github(self):
+        gh_cli_url = os.getenv('GH_CLI_URL')
+        if gh_cli_url:
+            return GitHubEnterprise(gh_cli_url)
+        else:
+            return GitHub()
 
     @abstractmethod
     def run(self, options, args):
