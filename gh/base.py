@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABCMeta
 from optparse import OptionParser
 from github3 import GitHub, GitHubEnterprise
+from github3.models import urlparse
 from getpass import getpass
 from gh.util import github_config
 from gh.compat import input, ConfigParser
@@ -61,10 +62,14 @@ class Command(object):
         config = github_config()
         parser = ConfigParser()
 
+        section = 'github'
+        if hasattr(self.gh, 'url'):
+            section += ':' + urlparse(self.gh.url).netloc
+
         # Check to make sure the file exists and we are allowed to read it
         if os.path.isfile(config) and os.access(config, os.R_OK | os.W_OK):
             parser.readfp(open(config))
-            self.gh.login(token=parser.get('github', 'token'))
+            self.gh.login(token=parser.get(section, 'token'))
         else:
         # Either the file didn't exist or we didn't have the correct
         # permissions
