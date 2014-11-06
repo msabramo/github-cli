@@ -7,8 +7,8 @@ class ReposCommand(Command):
     name = 'repo.repos'
     usage = ('%prog [options] repos [options] [login] [sub-command]')
     summary = ('Interact with the Repositories API')
-    fs = ("{d[bold]}{0.name}{d[default]}\n  {1:.72}")
-    fs2 = ("{d[bold]}{0.name}{d[default]}")
+    fs = ("{d[bold]}{0.owner}/{0.name}{d[default]}\n  {1:.72}")
+    fs2 = ("{d[bold]}{0.owner}/{0.name}{d[default]}")
     subcommands = {}
 
     def __init__(self):
@@ -41,6 +41,10 @@ class ReposCommand(Command):
                                default=-1,
                                nargs=1,
                                )
+        self.parser.add_option('-o', '--organization',
+                               dest='organization',
+                               help='List repositories of only a certain org',
+                               )
 
     def run(self, options, args):
         opts, args = self.parser.parse_args(args)
@@ -63,7 +67,17 @@ class ReposCommand(Command):
             'number': opts.number
         }
 
-        if isinstance(user, User):
+        if opts.organization:
+            org = self.gh.organization(opts.organization)
+            for key in ('sort', 'direction'):
+                del kwargs[key]
+            repos = org.iter_repos(**kwargs)
+        elif opts.type == 'all':
+            # These keys not supported by iter_all_repos
+            for key in ('sort', 'direction', 'type'):
+                del kwargs[key]
+            repos = self.gh.iter_all_repos(**kwargs)
+        elif isinstance(user, User):
             repos = self.gh.iter_repos(self.user, **kwargs)
         else:
             repos = self.gh.iter_repos(**kwargs)
